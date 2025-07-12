@@ -12,7 +12,26 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp)
+find_package(Taglib REQUIRED)
+
+add_executable(main src/main.cpp src/song.cpp src/playlist.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
+
+
 target_link_libraries(main PRIVATE SFML::Graphics)
 target_link_libraries(main PRIVATE SFML::Audio)
+
+# taglib multiplatform linking
+if (WIN32)
+    # Assume TagLib is installed in a known directory on Windows (e.g., vcpkg or manual)
+    target_include_directories(main PRIVATE "C:/libs/taglib/include")
+    target_link_directories(main PRIVATE "C:/libs/taglib/lib")
+    target_link_libraries(main PRIVATE tag)
+elseif(APPLE)
+    find_package(Taglib REQUIRED)
+    target_link_libraries(main PRIVATE Taglib::Taglib)
+elseif(UNIX)
+    target_include_directories(main PRIVATE /usr/include/taglib)
+    target_link_libraries(main PRIVATE tag)
+endif()
+
