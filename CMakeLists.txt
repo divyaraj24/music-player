@@ -12,8 +12,6 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-find_package(Taglib REQUIRED)
-
 add_executable(main src/main.cpp src/song.cpp src/playlist.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 
