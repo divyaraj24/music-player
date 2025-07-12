@@ -1,21 +1,22 @@
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <iostream>
 
-int main()
-{
-    auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
-    window.setFramerateLimit(144);
+int main() {
+    sf::Music music;
 
-    while (window.isOpen())
-    {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-            {
-                window.close();
-            }
-        }
-
-        window.clear();
-        window.display();
+    // Try loading an audio file (make sure song.ogg is in the same directory)
+    if (!music.openFromFile("song.wav")) {
+        std::cerr << "❌ Failed to load 'song.wav'\n";
+        return 1;
     }
+
+    std::cout << "🎵 Now playing 'song.ogg'. Press Enter to stop...\n";
+    music.play();
+
+    std::cin.get();  // Wait for user input
+
+    music.stop();
+    std::cout << "🛑 Playback stopped.\n";
+
+    return 0;
 }
