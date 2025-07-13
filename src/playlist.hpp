@@ -17,7 +17,7 @@ class Playlist {
         int getPlaylistSize() const;
         void gotoNextSong();
         void gotoPreviousSong();
-        void enableLoopPlaylist();
+        void loopPlaylist(bool state);
         
     private:
         std::vector<Song> m_songs;

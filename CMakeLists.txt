@@ -1,42 +1,58 @@
 cmake_minimum_required(VERSION 3.28)
-project(CMakeSFMLProject LANGUAGES CXX)
+project(MusicPlayerCLI LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 include(FetchContent)
-FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 3.0.1
-    GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL
-    SYSTEM)
-FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp src/song.cpp src/playlist.cpp)
-target_compile_features(main PRIVATE cxx_std_17)
+# ---------------------------------------------------
+# FTXUI
+# ---------------------------------------------------
+FetchContent_Declare(ftxui
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI
+  GIT_TAG v6.1.9
+)
+FetchContent_MakeAvailable(ftxui)
 
+# ---------------------------------------------------
+# SFML (Audio Only)
+# ---------------------------------------------------
+FetchContent_Declare(sfml
+  GIT_REPOSITORY https://github.com/SFML/SFML.git
+  GIT_TAG 2.6.1 # Or 3.0.1 if you're using dev features
+)
+FetchContent_MakeAvailable(sfml)
 
-target_link_libraries(main PRIVATE SFML::Graphics)
-target_link_libraries(main PRIVATE SFML::Audio)
+# ---------------------------------------------------
+# TagLib
+# ---------------------------------------------------
+FetchContent_Declare(taglib
+  GIT_REPOSITORY https://github.com/taglib/taglib.git
+  GIT_TAG v2.1.1
+)
+FetchContent_MakeAvailable(taglib)
 
-# taglib multiplatform linking
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(TAGLIB REQUIRED taglib)
+# ---------------------------------------------------
+# Add Executable and Sources
+# ---------------------------------------------------
+add_executable(main
+  src/main.cpp
+  src/song.cpp
+  src/playlist.cpp
+  src/music_player.cpp
+)
 
-target_include_directories(main PRIVATE ${TAGLIB_INCLUDE_DIRS})
-target_link_directories(main PRIVATE ${TAGLIB_LIBRARY_DIRS})
-target_link_libraries(main PRIVATE ${TAGLIB_LIBRARIES})
+# ---------------------------------------------------
+# Link Libraries
+# ---------------------------------------------------
+target_link_libraries(main
+  PRIVATE ftxui::screen
+  PRIVATE ftxui::dom
+  PRIVATE ftxui::component
 
-# if (WIN32)
-#     # Assume TagLib is installed in a known directory on Windows (e.g., vcpkg or manual)
-#     target_include_directories(main PRIVATE "C:/libs/taglib/include")
-#     target_link_directories(main PRIVATE "C:/libs/taglib/lib")
-#     target_link_libraries(main PRIVATE tag)
-# elseif(APPLE)
-#     find_package(Taglib REQUIRED)
-#     target_link_libraries(main PRIVATE Taglib::Taglib)
-# elseif(UNIX)
-#     target_include_directories(main PRIVATE /usr/include/taglib)
-#     target_link_libraries(main PRIVATE tag)
-# endif()
+  PRIVATE sfml-audio
+  PRIVATE sfml-system
 
+  PRIVATE tag
+)

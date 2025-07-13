@@ -58,7 +58,7 @@ Song Playlist::getPreviousSong() const {
 
 int Playlist::getPlaylistSize() const {return m_songs.size();}
 
-void Playlist::enableLoopPlaylist() {m_loopPlaylist = true;}
+void Playlist::loopPlaylist(bool state) {m_loopPlaylist = state;}
 
 void Playlist::displayInfo() const {
     std::cout << "Songs in the playlist: \n";
