@@ -2,6 +2,19 @@
 
 This project is for practicing c++ and its features.
 
+### Dependencies:
+
+Install zlib manually
+
+macOS:
+`brew install zlib`
+
+Linux (Arch):
+`sudo pacman -S zlib`
+
+Ubuntu/Debian:
+`sudo apt install zlib1g-dev`
+
 ### Goals:
 
 Features to add:
@@ -14,9 +27,8 @@ Features to add:
 - Delete song – From library or playlist
 - Save/load – Use file I/O to persist songs and playlists
 
-
 # 1. First Target:
- 
+
 For now, I will focus on creating a simple text based interface to add, display, search, play and pause.
 
 NOTES:

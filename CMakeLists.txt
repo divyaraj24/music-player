@@ -20,18 +20,24 @@ FetchContent_MakeAvailable(ftxui)
 # ---------------------------------------------------
 FetchContent_Declare(sfml
   GIT_REPOSITORY https://github.com/SFML/SFML.git
-  GIT_TAG 2.6.1 # Or 3.0.1 if you're using dev features
+  GIT_TAG 2.6.1
 )
 FetchContent_MakeAvailable(sfml)
 
 # ---------------------------------------------------
-# TagLib
+# TagLib via ExternalProject_Add
 # ---------------------------------------------------
-FetchContent_Declare(taglib
+include(ExternalProject)
+
+ExternalProject_Add(taglib_ep
   GIT_REPOSITORY https://github.com/taglib/taglib.git
   GIT_TAG v2.1.1
+  PREFIX ${CMAKE_BINARY_DIR}/taglib
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/taglib/install
 )
-FetchContent_MakeAvailable(taglib)
+
+include_directories(${CMAKE_BINARY_DIR}/taglib/install/include)
+link_directories(${CMAKE_BINARY_DIR}/taglib/install/lib)
 
 # ---------------------------------------------------
 # Add Executable and Sources
@@ -42,6 +48,12 @@ add_executable(main
   src/playlist.cpp
   src/music_player.cpp
 )
+
+# Ensure TagLib builds before main
+add_dependencies(main taglib_ep)
+
+# Zlib is required by TagLib
+find_package(ZLIB REQUIRED)
 
 # ---------------------------------------------------
 # Link Libraries
@@ -55,4 +67,5 @@ target_link_libraries(main
   PRIVATE sfml-system
 
   PRIVATE tag
+  PRIVATE ZLIB::ZLIB
 )
